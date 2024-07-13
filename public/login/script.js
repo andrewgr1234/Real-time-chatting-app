@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   let users;
 
-  fetch("database/db.json")
+  fetch("db.json")
     .then((response) => response.json())
     .then((data) => {
       users = data;
