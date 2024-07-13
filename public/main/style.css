@@ -1,0 +1,66 @@
+body {
+  background-color: rgb(141, 141, 141);
+  color: rgb(0, 177, 201);
+  overflow: hidden;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+  top: 0;
+  left: 0;
+  right: 0;
+  position: fixed;
+  height: 70px;
+  align-content: center;
+}
+
+li {
+  float:left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover {
+  background-color: #111;
+}
+
+form {
+  align-items: center;
+  align-content: center;
+  text-align: center;
+  padding: 20%;
+}
+
+input {
+  margin: 10px;
+  border-radius: 5px;
+  border: 0;
+  height: 30px;
+}
+
+::placeholder {
+  text-align: center;
+}
+
+button {
+  width: 150px;
+  height: 40px;
+  border-radius: 50px;
+  border: 0;
+  margin: 10px;
+}
+
+#up {
+  color: blue;
+  background-color: aqua;
+}
