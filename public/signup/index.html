@@ -20,7 +20,9 @@
       </ul>
     </div>
 
-    <form id="signupForm" method="post" action="/signup">
+    <form id="signupForm" method="post" action="/login">
+      <input type="text" placeholder="Email" id="email" name="email" />
+      <br />
       <input type="text" placeholder="Username" id="username" name="username" />
       <br />
       <input
@@ -29,9 +31,11 @@
         id="password"
         name="password"
       />
+      <br>
+      <input type="text" placeholder="Profile Picture URL" id="pfp" name="profilePic" >
       <br />
-      <button type="submit" id="up">Sign up</button>
-      <button type="button" id="in"><a href="/">Login</a></button>
+      <button type="submit" id="signupButton">Sign up</button>
+      <a href="/login"><button type="button" id="loginButton">Login</button></a>
     </form>
 
     <script src="../signup/script.js"></script>

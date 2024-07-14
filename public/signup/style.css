@@ -66,13 +66,13 @@ button {
   cursor: pointer;
 }
 
-#up {
-  color: blue;
-  background-color: aqua;
-}
-
 button:hover {
   animation: move 0.5s ease forwards;
+}
+
+#loginButton {
+  color: blue;
+  background-color: aqua;
 }
 
 @keyframes move {

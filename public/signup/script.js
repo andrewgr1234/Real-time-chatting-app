@@ -5,8 +5,10 @@ document.addEventListener("DOMContentLoaded", () => {
     event.preventDefault();
 
     const formData = new FormData(signupForm);
+    const email = formData.get("email");
     const username = formData.get("username");
     const password = formData.get("password");
+    const profilePic = formData.get("profilePic");
 
     try {
       const usersResponse = await fetch("/users");
@@ -16,9 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const users = await usersResponse.json();
       const existingUser = users.find((user) => user.username === username);
+      const existingEmail = users.find((user) => user.email === email);
 
       if (existingUser) {
         alert("Username already exists. Please choose a different one.");
+        return;
+      } else if (existingEmail) {
+        alert("Email already exists. Please choose a different one.");
         return;
       }
 
@@ -27,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, email, profilePic }),
       });
 
       if (!signupResponse.ok) {
@@ -37,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await signupResponse.json();
       console.log("Signup response:", data.message);
       alert("User signed up successfully!");
+      window.location.href = "/login";
     } catch (error) {
       console.error("Error signing up:", error);
       alert("Failed to sign up. Please try again.");

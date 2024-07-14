@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const { profile } = require("console");
 const app = express();
 const port = 3001;
 
@@ -17,6 +18,10 @@ app.get("/users", (req, res) => {
 });
 
 app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/index.html"));
+});
+
+app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/login/index.html"));
 });
 
@@ -29,12 +34,16 @@ app.get("/home", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
+  let { profilePic } = req.body;
 
-  if (!username || !password) {
+  if (!username || !password || !email) {
     return res
       .status(400)
-      .json({ error: "Username and password are required." });
+      .json({ error: "A username, password and email are required." });
+  } else if (!profilePic) {
+    profilePic =
+      "https://i.pinimg.com/736x/c0/27/be/c027bec07c2dc08b9df60921dfd539bd.jpg";
   }
 
   const existingUser = Object.values(users).find(
@@ -45,10 +54,20 @@ app.post("/signup", (req, res) => {
     return res.status(400).json({ error: "Username already exists." });
   }
 
+  const existingEmail = Object.values(users).find(
+    (user) => user.email === email
+  );
+
+  if (existingEmail) {
+    return res.status(400).json({ error: "this email is already signed up." });
+  }
+
   const userId = `user${Object.keys(users).length}`;
   users[userId] = {
     username,
     password,
+    email,
+    profilePic,
   };
 
   fs.writeFile(dbFilePath, JSON.stringify(users, null, 2), (err) => {

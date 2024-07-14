@@ -32,6 +32,25 @@ p {
   line-height: 1.6;
 }
 
+#profileBtn img, #img{
+  width: 50px;
+}
+
+#profileBtn {
+  text-align: left;
+  float: left;
+  cursor: pointer;
+}
+
+#profile{
+  background-color: gray;
+  width: 400px;
+  height: 350px;
+  display: none;
+  justify-content: center;
+  text-align: center;
+}
+
 .conversation {
   margin-bottom: 20px;
   padding: 10px;
