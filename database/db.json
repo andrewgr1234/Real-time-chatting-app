@@ -3,18 +3,12 @@
     "username": "testuser",
     "password": "123456789",
     "email": "testtest@test.com",
-    "profilePic": "https://images.seattletimes.com/wp-content/uploads/2024/04/04082024_OpEd-Potatoes_124536.jpg"
+    "profilePic": "https://www.rainforest-alliance.org/wp-content/uploads/2021/06/capybara-square-1.jpg.optimal.jpg"
   },
   "user1": {
     "username": "andrewgr1234",
     "password": "123456789",
     "email": "andrew.grayeb@gmail.com",
     "profilePic": "https://i.pinimg.com/736x/c0/27/be/c027bec07c2dc08b9df60921dfd539bd.jpg"
-  },
-  "user2": {
-    "username": "andrewgr1234sfgsfrg",
-    "password": "123456789",
-    "email": "andrew@gmail.com",
-    "profilePic": "https://www.rainforest-alliance.org/wp-content/uploads/2021/06/capybara-square-1.jpg.optimal.jpg"
   }
 }
