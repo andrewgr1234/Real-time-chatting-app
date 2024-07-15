@@ -7,5 +7,5 @@ npm init -y
 npm install
 ```
 
-- to be able to use the site you need to make a "db.json" file inside "/database/"
+- to be able to use the site you need to create "./Database/DB.json" (both the folder and file)
 - to run the code just do `` npm run dev ``
