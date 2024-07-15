@@ -9,7 +9,7 @@ app.use(express.static("public"));
 app.use(express.static("database"));
 app.use(express.json());
 
-const dbFilePath = path.join(__dirname, "../database/db.json");
+const dbFilePath = path.join(__dirname, "../database/DB.json");
 
 let users = require(dbFilePath);
 
@@ -21,12 +21,8 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/login/index.html"));
-});
-
-app.get("/signup", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/signup/index.html"));
+app.get("/join", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/join/index.html"));
 });
 
 app.get("/home", (req, res) => {
@@ -72,7 +68,7 @@ app.post("/signup", (req, res) => {
 
   fs.writeFile(dbFilePath, JSON.stringify(users, null, 2), (err) => {
     if (err) {
-      console.error("Error writing to db.json:", err);
+      console.error("Error writing to DB.json:", err);
       return res.status(500).json({ error: "Error saving user data." });
     }
     console.log("User signed up successfully:", username);

@@ -21,15 +21,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const loggedInEmail = getCookie("loggedInEmail");
   const loggedInProfilePic = getCookie("loggedInProfilePic");
   if (!loggedInUser) {
-    window.location.href = "/login";
+    window.location.href = "/join";
     return;
   }
 
   const welcomeMessage = document.getElementById("welcomeMessage");
   welcomeMessage.textContent = `Welcome back ${loggedInUser}`;
-  document.getElementById(
-    "profileBtn"
-  ).innerHTML = `<img src="${loggedInProfilePic}">`;
+  profileButton.style.backgroundImage = `url(${loggedInProfilePic})`;
 
   logoutButton.addEventListener("click", function () {
     document.cookie =
@@ -39,8 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.cookie =
       "loggedInProfilePic=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-    alert("loging out...Goodbye!");
-    window.location.href = "/login";
+    alert("Logging out...Goodbye!");
+    window.location.href = "/join";
   });
 
   sendMessageButton.addEventListener("click", () => {
@@ -49,20 +47,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchButton.addEventListener("click", () => {
     alert("Searching for friends...");
+    console.log("Searching for friends...");
   });
 
   profileButton.addEventListener("click", () => {
-    const email = document.getElementById("email");
-    const username = document.getElementById("username");
-    const profileimg = document.getElementById("img");
-    if (profile.style.display == "none") {
+    toggleProfile();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!profile.contains(event.target) && event.target !== profileButton) {
+      profile.style.display = "none";
+    }
+  });
+
+  function toggleProfile() {
+    if (profile.style.display === "none") {
       profile.style.display = "block";
+      const email = document.getElementById("email");
+      const username = document.getElementById("username");
+      const profileimg = document.getElementById("img");
+      email.textContent = loggedInEmail;
+      username.textContent = loggedInUser;
+      profileimg.src = loggedInProfilePic;
     } else {
       profile.style.display = "none";
     }
-
-    email.textContent = `${loggedInEmail}`;
-    username.textContent = `${loggedInUser}`;
-    profileimg.setAttribute("src", `${loggedInProfilePic}`);
-  });
+  }
 });

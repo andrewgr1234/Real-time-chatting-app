@@ -1,6 +1,8 @@
 body {
   background-color: rgb(141, 141, 141);
   color: rgb(0, 177, 201);
+  margin: 0;
+  font-family: Arial, sans-serif;
   overflow: hidden;
 }
 
@@ -38,11 +40,27 @@ li a:hover {
   background-color: #111;
 }
 
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 70px;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  border-right: 1px solid #ccc;
+}
+
+.right {
+  right: 0;
+}
+
 form {
-  align-items: center;
-  align-content: center;
   text-align: center;
-  padding: 20%;
+  padding: 10%;
 }
 
 input {
@@ -70,9 +88,14 @@ button:hover {
   animation: move 0.5s ease forwards;
 }
 
-#loginButton {
+#signupButton {
   color: blue;
   background-color: aqua;
+}
+
+#loginButton {
+  color: white;
+  background-color: blue;
 }
 
 @keyframes move {
