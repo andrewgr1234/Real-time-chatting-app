@@ -6,38 +6,38 @@ body {
   overflow: hidden;
 }
 
-a {
-  text-decoration: none;
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+  text-align: center;
+  height: 50px;
 }
 
-ul {
+nav ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  background-color: #333;
-  top: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
-  height: 70px;
-  align-content: center;
+  display: inline-block;
+  margin-top: 15px;
 }
 
-li {
-  float: left;
+nav ul li {
+  display: inline;
+  margin-right: 20px;
 }
 
-li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
+nav ul li a {
+  color: #fff;
   text-decoration: none;
+  font-weight: bold;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
-li a:hover {
-  background-color: #111;
+nav ul li a:hover {
+  background-color: #555;
 }
 
 .split {

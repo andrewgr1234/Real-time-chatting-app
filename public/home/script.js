@@ -1,48 +1,37 @@
+import functions from "../../public-functions.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logoutButton");
-  const sendMessageButton = document.getElementById("sendMessageButton");
   const searchButton = document.getElementById("searchButton");
   const profileButton = document.getElementById("profileBtn");
   const profile = document.getElementById("profile");
+  const loggedInUser = functions.getCookies("loggedInUsername");
+  const loggedInEmail = functions.getCookies("loggedInEmail");
+  const loggedInProfilePic = functions.getCookies("loggedInProfilePic");
+  let users;
 
-  function getCookie(name) {
-    const cookieString = document.cookie;
-    const cookies = cookieString.split(";");
-    for (let cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.split("=");
-      if (cookieName.trim() === name) {
-        return cookieValue;
-      }
-    }
-    return null;
-  }
-
-  const loggedInUser = getCookie("loggedInUsername");
-  const loggedInEmail = getCookie("loggedInEmail");
-  const loggedInProfilePic = getCookie("loggedInProfilePic");
   if (!loggedInUser) {
     window.location.href = "/join";
     return;
   }
+
+  functions
+    .fetchUserData()
+    .then((data) => {
+      users = data;
+    })
+    .catch((error) => {
+      console.error("Error fetching user data:", error);
+    });
 
   const welcomeMessage = document.getElementById("welcomeMessage");
   welcomeMessage.textContent = `Welcome back ${loggedInUser}`;
   profileButton.style.backgroundImage = `url(${loggedInProfilePic})`;
 
   logoutButton.addEventListener("click", function () {
-    document.cookie =
-      "loggedInUsername=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "loggedInEmail=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    document.cookie =
-      "loggedInProfilePic=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
+    functions.deleteCookies();
     alert("Logging out...Goodbye!");
     window.location.href = "/join";
-  });
-
-  sendMessageButton.addEventListener("click", () => {
-    console.log("Sending message...");
   });
 
   searchButton.addEventListener("click", () => {
@@ -73,4 +62,99 @@ document.addEventListener("DOMContentLoaded", () => {
       profile.style.display = "none";
     }
   }
+
+  function saveChanges(updatedUsers) {
+    fetch("/updateUserData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedUsers),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data saved successfully:", data);
+      })
+      .catch((error) => console.error("Error saving data:", error));
+  }
+
+  document.getElementById("emailChangeButton").addEventListener("click", () => {
+    const newEmail = document.getElementById("newEmail").value;
+    const user = Object.values(users).find(
+      (user) => user.username === loggedInUser
+    );
+
+    if (!newEmail) {
+      alert("Please enter a new email address");
+      return;
+    }
+    if (user) {
+      user.email = newEmail;
+      alert("Email Changed!");
+      saveChanges(users);
+      functions.setCookie("loggedInEmail", user.email, 7);
+      location.reload();
+    } else {
+      alert("User not found. Please try again.");
+    }
+  });
+
+  document
+    .getElementById("usernameChangeButton")
+    .addEventListener("click", () => {
+      const newUsername = document.getElementById("newUsername").value;
+      const user = Object.values(users).find(
+        (user) => user.email === loggedInEmail
+      );
+
+      if (!newUsername) {
+        alert("Please enter a new username");
+        return;
+      }
+      if (user) {
+        user.username = newUsername;
+        alert("Username Changed!");
+        saveChanges(users);
+        functions.setCookie("loggedInUsername", user.username, 7);
+        location.reload();
+      } else {
+        alert("User not found. Please try again.");
+      }
+    });
+
+  document
+    .getElementById("passwordChangeButton")
+    .addEventListener("click", () => {
+      const currentPassword = document.getElementById("currentPassword").value;
+      const newPassword = document.getElementById("newPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const user = Object.values(users).find(
+        (user) => user.email === loggedInEmail
+      );
+
+      if (!newPassword || !currentPassword || !confirmPassword) {
+        alert("Please fill in all fields to change your password.");
+        return;
+      }
+      if (!user) {
+        alert("User not found. Please try again.");
+        return;
+      }
+      if (user.password !== currentPassword) {
+        alert(
+          "The current password you entered is incorrect. Please try again."
+        );
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        alert("Passwords do not match. Please try again.");
+        return;
+      }
+
+      user.password = newPassword;
+      alert("Password changed! Please log back in to apply changes.");
+      saveChanges(users);
+      functions.deleteCookies();
+      window.location.href = "/join";
+    });
 });

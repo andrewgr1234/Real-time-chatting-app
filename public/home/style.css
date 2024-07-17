@@ -5,6 +5,10 @@ body {
   padding: 0;
 }
 
+::placeholder {
+  text-align: center;
+}
+
 .header-container {
   display: flex;
   justify-content: space-between;
@@ -51,20 +55,29 @@ p {
   border-radius: 50%;
 }
 
+#pfp {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  background-position: center;
+}
+
 .profile-img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
 
-
 #profile {
   position: absolute;
   top: 70px;
   left: 20px;
   background-color: gray;
-  width: 400px;
-  height: 450px;
+  width: 700px;
+  height: 600px;
   display: none;
   justify-content: center;
   text-align: center;
@@ -75,6 +88,38 @@ p {
 
 #profile h1 {
   padding-top: 15px;
+}
+
+#userInfo {
+  position: absolute;
+  left: 50px;
+}
+
+#changeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: absolute;
+  right: 40px;
+}
+.change-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.change-section button {
+  width: 130px;
+}
+
+#separator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid #ccc;
+  margin-left: -1px;
 }
 
 #logoutButton {
@@ -90,6 +135,30 @@ p {
 
 #logoutButton:hover {
   background-color: #c82333;
+}
+
+#chats {
+  width: 130px;
+  background-color: rgb(163, 163, 163);
+  height: 100%;
+}
+
+#chats ul {
+  list-style-type: none;
+}
+
+#friendsList li {
+  margin-bottom: 15px;
+  background-color: rgb(32, 144, 255);
+  padding: 5px;
+  padding-left: 10px;
+  width: 100px;
+  margin-left: -30px;
+  border-radius: 10px;
+}
+
+#friendsList li:hover {
+  background-color: rgba(32, 144, 255, 0.1);
 }
 
 .conversation {
@@ -142,10 +211,12 @@ p {
   background-color: #28a745;
   color: #fff;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 }
 
 .search-button:hover {

@@ -18,16 +18,53 @@
     </header>
 
     <div id="profile">
-      <h1><u>Your Profile</u></h1>
-      <h3>Profile Picture:</h3>
-      <img id="img" />
-      <h3>Email Address:</h3>
-      <h4 id="email"></h4>
-      <h3>Username:</h3>
-      <h4 id="username"></h4>
+      <div id="userInfo">
+        <h1><u>Your Profile</u></h1>
+        <h3>Profile Picture:</h3>
+        <button id="pfp"><img id="img" /></button>
+        <h3>Email Address:</h3>
+        <u><h4 id="email"></h4></u>
+        <h3>Username:</h3>
+        <u><h4 id="username"></h4></u>
+      </div>
+
+      <div id="separator"></div>
+
+      <div id="changeInfo">
+        <h1><u>Change Your Info</u></h1>
+        <div id="emailChange" class="change-section">
+          <h3><u>Change Your Email Address:</u></h3>
+          <input id="newEmail" placeholder="New Email Address" type="text" />
+          <button id="emailChangeButton" type="submit">Confirm change</button>
+        </div>
+        <div id="usernameChange" class="change-section">
+          <h3><u>Change Your Username:</u></h3>
+          <input id="newUsername" placeholder="New Username" type="text" />
+          <button id="usernameChangeButton" type="submit">
+            Confirm change
+          </button>
+        </div>
+        <div id="passwordChange" class="change-section">
+          <h3><u>Change Your Password:</u></h3>
+          <input
+            id="currentPassword"
+            placeholder="Current Password"
+            type="password"
+          />
+          <input id="newPassword" placeholder="New Password" type="password" />
+          <input
+            id="confirmPassword"
+            placeholder="Confirm Password"
+            type="password"
+          />
+          <button id="passwordChangeButton" type="submit">
+            Confirm change
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="container">
+    <!--<div class="container">
       <div class="conversation">
         <h3>Recent Conversations</h3>
         <p>John Doe: Hey, how are you?</p>
@@ -37,8 +74,29 @@
         <textarea placeholder="Type your message here"></textarea>
         <button id="sendMessageButton">Send</button>
       </div>
-      <button id="searchButton" class="search-button">+</button>
+      
+    </div> -->
+
+    <div id="chats">
+      <ul>
+        <br />
+        <li><button id="searchButton" class="search-button">+</button></li>
+        <br />
+      </ul>
+
+      <div id="friends">
+        <input type="text" placeholder="Search for you friends" name="search" />
+        <button>Search</button>
+        <ul id="friendsList">
+          <li>John Doe 1</li>
+          <li>John Doe 2</li>
+          <li>John Doe 3</li>
+          <li>John Doe 4</li>
+          <li>John Doe 5</li>
+        </ul>
+      </div>
     </div>
-    <script src="../home/script.js"></script>
+
+    <script type="module" src="../home/script.js"></script>
   </body>
 </html>

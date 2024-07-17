@@ -1,26 +1,26 @@
+import functions from "../../public-functions.js";
+const cookieNames = ["loggedInUsername", "loggedInEmail", "loggedInProfilePic"];
+const cookies = functions.getCookies(cookieNames);
+cookieNames.forEach((name) => {
+  if (cookies[name]) {
+    window.location.href = "/home";
+  }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
 
   let users;
 
-  fetch("/DB.json")
-    .then((response) => response.json())
+  functions
+    .fetchUserData()
     .then((data) => {
       users = data;
-      console.log(users);
     })
-    .catch((error) => console.error("Error fetching user data:", error));
-
-  function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-      let date = new Date();
-      date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-      expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
-  }
+    .catch((error) => {
+      console.error("Error fetching user data:", error);
+    });
 
   function checkLogin(event) {
     event.preventDefault();
@@ -32,9 +32,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (user.username === username && user.password === password) {
         loggedIn = true;
         const { email, profilePic } = getUserData(username);
-        setCookie("loggedInUsername", username, 7);
-        setCookie("loggedInEmail", email, 7);
-        setCookie("loggedInProfilePic", profilePic, 7);
+        functions.setCookie("loggedInUsername", username, 7);
+        functions.setCookie("loggedInEmail", email, 7);
+        functions.setCookie("loggedInProfilePic", profilePic, 7);
         console.log("Success!");
         window.location.href = "/home";
       }
