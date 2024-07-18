@@ -93,6 +93,9 @@ p {
 #userInfo {
   position: absolute;
   left: 50px;
+  align-items: center;
+  text-align: center;
+  align-content: center;
 }
 
 #changeInfo {
@@ -111,6 +114,10 @@ p {
 
 .change-section button {
   width: 130px;
+}
+
+#newPfp, #pfpChangeButton{
+  display: none;
 }
 
 #separator {

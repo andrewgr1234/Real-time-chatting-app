@@ -78,6 +78,42 @@ document.addEventListener("DOMContentLoaded", () => {
       .catch((error) => console.error("Error saving data:", error));
   }
 
+  document.getElementById("pfp").addEventListener("click", () => {
+    const pfpChangeButton = document.getElementById("pfpChangeButton");
+    const newPfp = document.getElementById("newPfp");
+    if (
+      newPfp.style.display === "none" &&
+      pfpChangeButton.style.display === "none"
+    ) {
+      newPfp.style.display = "block";
+      pfpChangeButton.style.display = "block";
+    } else {
+      newPfp.style.display = "none";
+      pfpChangeButton.style.display = "none";
+    }
+  });
+
+  document.getElementById("pfpChangeButton").addEventListener("click", () => {
+    const newPfp = document.getElementById("newPfp").value;
+    const user = Object.values(users).find(
+      (user) => user.email === loggedInEmail
+    );
+
+    if (!newPfp) {
+      alert("Please enter a URL");
+      return;
+    }
+    if (user) {
+      user.profilePic = newPfp;
+      alert("Profile Picture Changed!");
+      saveChanges(users);
+      functions.setCookie("loggedInProfilePic", user.profilePic, 7);
+      location.reload();
+    } else {
+      alert("User not found. Please try again.");
+    }
+  });
+
   document.getElementById("emailChangeButton").addEventListener("click", () => {
     const newEmail = document.getElementById("newEmail").value;
     const user = Object.values(users).find(
