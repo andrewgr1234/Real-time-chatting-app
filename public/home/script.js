@@ -34,11 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/join";
   });
 
-  searchButton.addEventListener("click", () => {
-    alert("Searching for friends...");
-    console.log("Searching for friends...");
-  });
-
   profileButton.addEventListener("click", () => {
     toggleProfile();
   });
@@ -193,4 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
       functions.deleteCookies();
       window.location.href = "/join";
     });
+
+    
+
 });
