@@ -1,4 +1,36 @@
-import functions from "../../public-functions.js";
+import functions from "../../src/public-functions.js";
+
+function getCookies(names) {
+  const allCookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [cookieName, cookieValue] = cookie.split("=");
+    acc[cookieName] = cookieValue;
+    return acc;
+  }, {});
+
+  if (Array.isArray(names)) {
+    return names.reduce((acc, name) => {
+      acc[name] = allCookies[name] || null;
+      return acc;
+    }, {});
+  } else if (typeof names === "string") {
+    return allCookies[names] || null;
+  } else {
+    throw new Error("Invalid argument type. Expected string or array.");
+  }
+}
+
+async function fetchUserData() {
+  try {
+    const response = await fetch("/getUserData");
+    if (!response.ok) {
+      throw new Error("Failed to fetch user data");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logoutButton");
@@ -6,8 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileButton = document.getElementById("profileBtn");
   const profile = document.getElementById("profile");
 
-  const sessionCookie = functions.getCookies("sessionId");
-  console.log("Session cookie:", sessionCookie);
+  const sessionCookie = getCookies("sessionId");
 
   if (!sessionCookie) {
     alert("Please login first");
@@ -15,10 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  functions
-    .fetchUserData()
+  fetchUserData()
     .then((data) => {
-      console.log("User data:", data);
       updateProfileInfo(data);
     })
     .catch((error) => {

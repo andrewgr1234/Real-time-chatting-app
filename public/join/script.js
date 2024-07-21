@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = document.getElementById("loginUsername").value;
     const password = document.getElementById("loginPassword").value;
 
-    console.log("Login form data:", { username, password });
-
     try {
       const loginResponse = await fetch("/login", {
         method: "POST",
@@ -46,8 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const username = formData.get("username");
     const password = formData.get("password");
     const profilePic = formData.get("profilePic");
-
-    console.log("Signup form data:", { username, password, email, profilePic });
 
     try {
       const signupResponse = await fetch("/signup", {

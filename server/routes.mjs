@@ -5,6 +5,7 @@ import path from "path";
 import User from "./models/user.mjs";
 import cookieParser from "cookie-parser";
 import { getUserData } from "./controllers/userControllers.mjs";
+import functions from "../src/public-functions.js";
 
 const router = express.Router();
 
@@ -17,8 +18,23 @@ router.get("/join", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/join/index.html"));
 });
 
-router.get("/home", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/home/index.html"));
+router.get("/home", async (req, res) => {
+  try {
+    const userData = await functions.fetchUserData(req.session.userId);
+
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Only send response once
+    res.json(userData);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    // Ensure headers are not set after sending response
+    if (!res.headersSent) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 });
 
 router.post("/login", async (req, res) => {
@@ -35,13 +51,13 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Incorrect password." });
     }
 
-    res.cookie("sessionId", user._id.toString(), {
-      httpOnly: true,
-      secure: false, // Set to true if you're using HTTPS
-      maxAge: 24 * 60 * 60 * 1000,
+    req.session.userId = user._id;
+    res.cookie("sessionId", req.session.userId.toString(), {
+      httpOnly: false,
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
-
-    console.log("Cookies set:", req.cookies);
+    res.redirect("/home");
 
     res.json({
       message: "Success",
@@ -137,7 +153,6 @@ router.post("/updateUserData", async (req, res) => {
 
 router.get("/getUserData", async (req, res) => {
   try {
-    // Get user ID from session cookie
     const userId = req.cookies.sessionId;
     if (!userId) {
       return res.status(400).json({ error: "No logged-in user found." });
@@ -158,10 +173,12 @@ router.get("/getUserData", async (req, res) => {
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {
-      return res.status(500).json({ error: "Failed to log out." });
+      return res.status(500).json({ error: "Failed to destroy session" });
     }
-    res.clearCookie("connect.sid");
-    res.json({ message: "Logged out successfully." });
+
+    res.clearCookie("connect.sid"); // Clear the session cookie
+    res.clearCookie("sessionId"); // Clear any other cookies
+    res.status(200).json({ message: "Logged out successfully" });
   });
 });
 

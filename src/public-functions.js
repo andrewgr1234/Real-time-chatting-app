@@ -1,16 +1,26 @@
-function getCookies(name) {
-  const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-    const [cookieName, cookieValue] = cookie.split("=").map((c) => c.trim());
-    acc[cookieName] = decodeURIComponent(cookieValue);
+function getCookies(names) {
+  const allCookies = document.cookie.split("; ").reduce((acc, cookie) => {
+    const [cookieName, cookieValue] = cookie.split("=");
+    acc[cookieName] = cookieValue;
     return acc;
   }, {});
 
-  console.log("All cookies:", cookies); // Debugging
-  return cookies[name] || null;
+  if (Array.isArray(names)) {
+    return names.reduce((acc, name) => {
+      acc[name] = allCookies[name] || null;
+      return acc;
+    }, {});
+  } else if (typeof names === "string") {
+    return allCookies[names] || null;
+  } else {
+    throw new Error("Invalid argument type. Expected string or array.");
+  }
 }
-
 function deleteCookies() {
-  document.cookie = "session=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "sessionId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
 
 async function fetchUserData() {
@@ -36,11 +46,5 @@ function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-const functions = {
-  getCookies,
-  deleteCookies,
-  fetchUserData,
-  setCookie,
-};
-
+const functions = [getCookies, deleteCookies, fetchUserData, setCookie];
 export default functions;
