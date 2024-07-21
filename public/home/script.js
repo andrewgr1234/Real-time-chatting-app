@@ -5,12 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchButton = document.getElementById("searchButton");
   const profileButton = document.getElementById("profileBtn");
   const profile = document.getElementById("profile");
-  const loggedInUser = functions.getCookies("loggedInUsername");
-  const loggedInEmail = functions.getCookies("loggedInEmail");
-  const loggedInProfilePic = functions.getCookies("loggedInProfilePic");
-  let users;
 
-  if (!loggedInUser) {
+  const sessionCookie = functions.getCookies("sessionId");
+  console.log("Session cookie:", sessionCookie);
+
+  if (!sessionCookie) {
+    alert("Please login first");
     window.location.href = "/join";
     return;
   }
@@ -18,25 +18,39 @@ document.addEventListener("DOMContentLoaded", () => {
   functions
     .fetchUserData()
     .then((data) => {
-      users = data;
+      console.log("User data:", data);
+      updateProfileInfo(data);
     })
     .catch((error) => {
       console.error("Error fetching user data:", error);
     });
 
-  const welcomeMessage = document.getElementById("welcomeMessage");
-  welcomeMessage.textContent = `Welcome back ${loggedInUser}`;
-  profileButton.style.backgroundImage = `url(${loggedInProfilePic})`;
+  function updateProfileInfo(userData) {
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    welcomeMessage.textContent = `Welcome back ${userData.username}`;
+    profileButton.style.backgroundImage = `url(${userData.profilePic})`;
 
-  logoutButton.addEventListener("click", function () {
-    functions.deleteCookies();
-    alert("Logging out...Goodbye!");
-    window.location.href = "/join";
+    const email = document.getElementById("email");
+    const username = document.getElementById("username");
+    const profileImg = document.getElementById("img");
+    email.textContent = userData.email;
+    username.textContent = userData.username;
+    profileImg.src = userData.profilePic;
+  }
+
+  logoutButton.addEventListener("click", () => {
+    fetch("/logout", {
+      method: "POST",
+    })
+      .then((response) => response.json())
+      .then(() => {
+        alert("Logging out... Goodbye!");
+        window.location.href = "/join";
+      })
+      .catch((error) => console.error("Error logging out:", error));
   });
 
-  profileButton.addEventListener("click", () => {
-    toggleProfile();
-  });
+  profileButton.addEventListener("click", toggleProfile);
 
   document.addEventListener("click", (event) => {
     if (!profile.contains(event.target) && event.target !== profileButton) {
@@ -45,26 +59,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function toggleProfile() {
-    if (profile.style.display === "none") {
-      profile.style.display = "block";
-      const email = document.getElementById("email");
-      const username = document.getElementById("username");
-      const profileimg = document.getElementById("img");
-      email.textContent = loggedInEmail;
-      username.textContent = loggedInUser;
-      profileimg.src = loggedInProfilePic;
-    } else {
-      profile.style.display = "none";
-    }
+    profile.style.display = profile.style.display === "none" ? "block" : "none";
   }
 
-  function saveChanges(updatedUsers) {
+  function saveChanges(updatedUser) {
     fetch("/updateUserData", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedUsers),
+      body: JSON.stringify(updatedUser),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -76,81 +80,79 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("pfp").addEventListener("click", () => {
     const pfpChangeButton = document.getElementById("pfpChangeButton");
     const newPfp = document.getElementById("newPfp");
-    if (
-      newPfp.style.display === "none" &&
-      pfpChangeButton.style.display === "none"
-    ) {
-      newPfp.style.display = "block";
-      pfpChangeButton.style.display = "block";
-    } else {
-      newPfp.style.display = "none";
-      pfpChangeButton.style.display = "none";
-    }
+    const isVisible = newPfp.style.display === "block";
+    newPfp.style.display = isVisible ? "none" : "block";
+    pfpChangeButton.style.display = isVisible ? "none" : "block";
   });
 
   document.getElementById("pfpChangeButton").addEventListener("click", () => {
     const newPfp = document.getElementById("newPfp").value;
-    const user = Object.values(users).find(
-      (user) => user.email === loggedInEmail
-    );
-
     if (!newPfp) {
       alert("Please enter a URL");
       return;
     }
-    if (user) {
-      user.profilePic = newPfp;
-      alert("Profile Picture Changed!");
-      saveChanges(users);
-      functions.setCookie("loggedInProfilePic", user.profilePic, 7);
-      location.reload();
-    } else {
-      alert("User not found. Please try again.");
-    }
+
+    fetch("/updateUserData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ profilePic: newPfp }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Profile picture updated:", data);
+        location.reload();
+      })
+      .catch((error) =>
+        console.error("Error updating profile picture:", error)
+      );
   });
 
   document.getElementById("emailChangeButton").addEventListener("click", () => {
     const newEmail = document.getElementById("newEmail").value;
-    const user = Object.values(users).find(
-      (user) => user.username === loggedInUser
-    );
-
     if (!newEmail) {
       alert("Please enter a new email address");
       return;
     }
-    if (user) {
-      user.email = newEmail;
-      alert("Email Changed!");
-      saveChanges(users);
-      functions.setCookie("loggedInEmail", user.email, 7);
-      location.reload();
-    } else {
-      alert("User not found. Please try again.");
-    }
+
+    fetch("/updateUserData", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: newEmail }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Email updated:", data);
+        location.reload();
+      })
+      .catch((error) => console.error("Error updating email:", error));
   });
 
   document
     .getElementById("usernameChangeButton")
     .addEventListener("click", () => {
       const newUsername = document.getElementById("newUsername").value;
-      const user = Object.values(users).find(
-        (user) => user.email === loggedInEmail
-      );
-
       if (!newUsername) {
         alert("Please enter a new username");
         return;
       }
-      if (user) {
-        user.username = newUsername;
-        alert("Username Changed!");
-        saveChanges(users);
-        functions.setCookie("loggedInUsername", user.username, 7);
-        location.reload();
-      } else {
-        alert("User not found. Please try again.");
-      }
+
+      fetch("/updateUserData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: newUsername }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Username updated:", data);
+          location.reload();
+        })
+        .catch((error) => console.error("Error updating username:", error));
     });
 
   document
@@ -159,36 +161,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const currentPassword = document.getElementById("currentPassword").value;
       const newPassword = document.getElementById("newPassword").value;
       const confirmPassword = document.getElementById("confirmPassword").value;
-      const user = Object.values(users).find(
-        (user) => user.email === loggedInEmail
-      );
 
-      if (!newPassword || !currentPassword || !confirmPassword) {
+      if (!currentPassword || !newPassword || !confirmPassword) {
         alert("Please fill in all fields to change your password.");
         return;
       }
-      if (!user) {
-        alert("User not found. Please try again.");
-        return;
-      }
-      if (user.password !== currentPassword) {
-        alert(
-          "The current password you entered is incorrect. Please try again."
-        );
-        return;
-      }
+
       if (newPassword !== confirmPassword) {
         alert("Passwords do not match. Please try again.");
         return;
       }
 
-      user.password = newPassword;
-      alert("Password changed! Please log back in to apply changes.");
-      saveChanges(users);
-      functions.deleteCookies();
-      window.location.href = "/join";
+      fetch("/updateUserData", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            alert(data.error);
+          } else {
+            alert("Password changed! Please log back in to apply changes.");
+            functions.deleteCookies();
+            window.location.href = "/join";
+          }
+        })
+        .catch((error) => console.error("Error updating password:", error));
     });
-
-    
-
 });
