@@ -1,4 +1,12 @@
+import { getCookies } from "../../src/public-functions.js";
+
 document.addEventListener("DOMContentLoaded", () => {
+  const sessionCookie = getCookies("sessionId");
+  if (sessionCookie) {
+    window.location.href = "/home";
+    return;
+  }
+
   const loginForm = document.getElementById("loginForm");
   const signupForm = document.getElementById("signupForm");
 
@@ -24,14 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await loginResponse.json();
-
-      if (data.message === "Success") {
-        window.location.href = "/home";
-      } else {
-        alert("Login failed: " + data.message);
-      }
+      window.location.href = "/home";
     } catch (error) {
-      console.error("Error logging in:", error);
       alert("Failed to log in: " + error.message);
     }
   }
@@ -68,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/join";
       }
     } catch (error) {
-      console.error("Error signing up:", error);
       alert("Failed to sign up: " + error.message);
     }
   });

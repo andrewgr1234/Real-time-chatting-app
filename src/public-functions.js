@@ -1,7 +1,7 @@
-function getCookies(names) {
+export function getCookies(names) {
   const allCookies = document.cookie.split("; ").reduce((acc, cookie) => {
     const [cookieName, cookieValue] = cookie.split("=");
-    acc[cookieName] = cookieValue;
+    acc[cookieName] = decodeURIComponent(cookieValue);
     return acc;
   }, {});
 
@@ -16,14 +16,15 @@ function getCookies(names) {
     throw new Error("Invalid argument type. Expected string or array.");
   }
 }
-function deleteCookies() {
-  document.cookie =
-    "sessionId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie =
-    "connect.sid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+export function deleteCookies() {
+  document.cookie.split(";").forEach((cookie) => {
+    const [name] = cookie.split("=");
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  });
 }
 
-async function fetchUserData() {
+export async function fetchUserData() {
   try {
     const response = await fetch("/getUserData");
     if (!response.ok) {
@@ -36,7 +37,7 @@ async function fetchUserData() {
   }
 }
 
-function setCookie(name, value, days) {
+export function setCookie(name, value, days) {
   let expires = "";
   if (days) {
     const date = new Date();
@@ -45,6 +46,3 @@ function setCookie(name, value, days) {
   }
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
-
-const functions = [getCookies, deleteCookies, fetchUserData, setCookie];
-export default functions;

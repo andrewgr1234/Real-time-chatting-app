@@ -1,47 +1,18 @@
-import functions from "../../src/public-functions.js";
-
-function getCookies(names) {
-  const allCookies = document.cookie.split("; ").reduce((acc, cookie) => {
-    const [cookieName, cookieValue] = cookie.split("=");
-    acc[cookieName] = cookieValue;
-    return acc;
-  }, {});
-
-  if (Array.isArray(names)) {
-    return names.reduce((acc, name) => {
-      acc[name] = allCookies[name] || null;
-      return acc;
-    }, {});
-  } else if (typeof names === "string") {
-    return allCookies[names] || null;
-  } else {
-    throw new Error("Invalid argument type. Expected string or array.");
-  }
-}
-
-async function fetchUserData() {
-  try {
-    const response = await fetch("/getUserData");
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    throw error;
-  }
-}
+import {
+  getCookies,
+  fetchUserData,
+  deleteCookies,
+} from "../../src/public-functions.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logoutButton");
   const searchButton = document.getElementById("searchButton");
   const profileButton = document.getElementById("profileBtn");
   const profile = document.getElementById("profile");
+  const deleteButton = document.getElementById("deleteUser");
 
   const sessionCookie = getCookies("sessionId");
-
   if (!sessionCookie) {
-    alert("Please login first");
     window.location.href = "/join";
     return;
   }
@@ -67,16 +38,27 @@ document.addEventListener("DOMContentLoaded", () => {
     profileImg.src = userData.profilePic;
   }
 
-  logoutButton.addEventListener("click", () => {
-    fetch("/logout", {
-      method: "POST",
-    })
-      .then((response) => response.json())
-      .then(() => {
-        alert("Logging out... Goodbye!");
-        window.location.href = "/join";
-      })
-      .catch((error) => console.error("Error logging out:", error));
+  logoutButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch("/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
+      }
+      alert("Logging out...Goodbye!");
+      window.location.href = "/join";
+    } catch (error) {
+      console.error("Error logging out:", error);
+      alert("Failed to log out: " + error.message);
+    }
   });
 
   profileButton.addEventListener("click", toggleProfile);
@@ -89,21 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function toggleProfile() {
     profile.style.display = profile.style.display === "none" ? "block" : "none";
-  }
-
-  function saveChanges(updatedUser) {
-    fetch("/updateUserData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedUser),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Data saved successfully:", data);
-      })
-      .catch((error) => console.error("Error saving data:", error));
   }
 
   document.getElementById("pfp").addEventListener("click", () => {
@@ -128,14 +95,20 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       body: JSON.stringify({ profilePic: newPfp }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Profile picture updated:", data);
-        location.reload();
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || "Failed to update profile picture");
+          });
+        }
+        return response.json();
       })
-      .catch((error) =>
-        console.error("Error updating profile picture:", error)
-      );
+      .then((data) => {
+        if (!data.error) {
+          location.reload();
+        }
+      })
+      .catch((error) => alert(error));
   });
 
   document.getElementById("emailChangeButton").addEventListener("click", () => {
@@ -152,12 +125,20 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       body: JSON.stringify({ email: newEmail }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Email updated:", data);
-        location.reload();
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((data) => {
+            throw new Error(data.error || "Failed to update email");
+          });
+        }
+        return response.json();
       })
-      .catch((error) => console.error("Error updating email:", error));
+      .then((data) => {
+        if (!data.error) {
+          location.reload();
+        }
+      })
+      .catch((error) => alert(error));
   });
 
   document
@@ -176,12 +157,20 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         body: JSON.stringify({ username: newUsername }),
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Username updated:", data);
-          location.reload();
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error || "Failed to update username");
+            });
+          }
+          return response.json();
         })
-        .catch((error) => console.error("Error updating username:", error));
+        .then((data) => {
+          if (!data.error) {
+            location.reload();
+          }
+        })
+        .catch((error) => alert(error));
     });
 
   document
@@ -208,16 +197,50 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         body: JSON.stringify({ currentPassword, newPassword }),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error || "Failed to update password");
+            });
+          }
+          return response.json();
+        })
         .then((data) => {
-          if (data.error) {
-            alert(data.error);
-          } else {
+          if (!data.error) {
             alert("Password changed! Please log back in to apply changes.");
-            functions.deleteCookies();
+            deleteCookies();
             window.location.href = "/join";
           }
         })
-        .catch((error) => console.error("Error updating password:", error));
+        .catch((error) => alert(error));
     });
+
+  deleteButton.addEventListener("click", function handleClick() {
+    deleteButton.textContent = "Are you sure? (Click again for yes)";
+    deleteButton.removeEventListener("click", handleClick);
+    deleteButton.addEventListener("click", () => {
+      fetch("/deleteUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            return response.json().then((data) => {
+              throw new Error(data.error || "Failed to delete user");
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (!data.error) {
+            alert("User deleted, goodbye forever...");
+            deleteCookies();
+            window.location.href = "/join";
+          }
+        })
+        .catch((error) => alert(error));
+    });
+  });
 });

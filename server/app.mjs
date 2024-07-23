@@ -34,13 +34,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, 
-      httpOnly: false, 
+      secure: true,
+      httpOnly: false,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
   })
 );
-
 
 app.use(
   cors({
@@ -72,7 +71,7 @@ const httpsServer = https.createServer(credentials, app);
 connectDB()
   .then(() => {
     httpsServer.listen(port, () => {
-      console.log(`Running on Port ${port} | https://localhost:${port}`);
+      console.log(`Server running at https://localhost:${port}`);
     });
   })
   .catch((err) => console.log(err));

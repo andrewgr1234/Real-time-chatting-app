@@ -5,10 +5,10 @@ import path from "path";
 import User from "./models/user.mjs";
 import cookieParser from "cookie-parser";
 import { getUserData } from "./controllers/userControllers.mjs";
-import functions from "../src/public-functions.js";
+import dotenv from "dotenv";
 
+dotenv.config();
 const router = express.Router();
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,58 +19,41 @@ router.get("/join", (req, res) => {
 });
 
 router.get("/home", async (req, res) => {
-  try {
-    const userData = await functions.fetchUserData(req.session.userId);
-
-    if (!userData) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Only send response once
-    res.json(userData);
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    // Ensure headers are not set after sending response
-    if (!res.headersSent) {
-      res.status(500).json({ message: "Internal Server Error" });
-    }
-  }
+  res.sendFile(path.join(__dirname, "../public/home/index.html"));
 });
 
 router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
   try {
+    const { username, password } = req.body;
+
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: "Username does not exist." });
+      console.log("User not found");
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Incorrect password." });
+      console.log("Password does not match");
+      return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    req.session.userId = user._id;
-    res.cookie("sessionId", req.session.userId.toString(), {
-      httpOnly: false,
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-    });
-    res.redirect("/home");
+    req.session.userId = user._id.toString();
 
-    res.json({
-      message: "Success",
-      username: user.username,
-      email: user.email,
-      profilePic: user.profilePic,
+    res.cookie("sessionId", user._id.toString(), {
+      httpOnly: false,
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
     });
-  } catch (err) {
-    console.error("Server error:", err.message);
-    res.status(500).json({ message: "Server error" });
+
+    return res.json({ message: "Login successful", user });
+  } catch (error) {
+    console.error("Login error:", error);
+    if (!res.headersSent) {
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
   }
 });
-
 router.post("/signup", async (req, res) => {
   const { username, password, email } = req.body;
   let { profilePic } = req.body;
@@ -82,8 +65,7 @@ router.post("/signup", async (req, res) => {
   }
 
   if (!profilePic) {
-    profilePic =
-      "https://i.pinimg.com/736x/c0/27/be/c027bec07c2dc08b9df60921dfd539bd.jpg";
+    profilePic = process.env.DEFAULT_PROFILE_PICTURE;
   }
 
   try {
@@ -111,12 +93,57 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+router.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+
+    for (let cookieName in req.cookies) {
+      res.clearCookie(cookieName);
+    }
+
+    res.json({ message: "Logged out successfully" });
+  });
+});
+
+router.post("/deleteUser", async (req, res) => {
+  try {
+    const userId = req.cookies.sessionId;
+    if (!userId) {
+      return res.status(400).json({ message: "No logged-in user found." });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    await User.deleteOne({ _id: userId });
+
+    req.session.destroy((err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Error logging out after deletion" });
+      }
+
+      for (let cookieName in req.cookies) {
+        res.clearCookie(cookieName);
+      }
+
+      res.json({ message: "User deleted successfully" });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 router.post("/updateUserData", async (req, res) => {
   try {
     const { email, username, profilePic, currentPassword, newPassword } =
       req.body;
 
-    // Get user ID from session cookie
     const userId = req.cookies.sessionId;
     if (!userId) {
       return res.status(400).json({ error: "No logged-in user found." });
@@ -125,6 +152,20 @@ router.post("/updateUserData", async (req, res) => {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ error: "User not found." });
+    }
+
+    if (email && email !== user.email) {
+      const existingUserByEmail = await User.findOne({ email });
+      if (existingUserByEmail) {
+        return res.status(400).json({ error: "Email already in use." });
+      }
+    }
+
+    if (username && username !== user.username) {
+      const existingUserByUsername = await User.findOne({ username });
+      if (existingUserByUsername) {
+        return res.status(400).json({ error: "Username already in use." });
+      }
     }
 
     if (currentPassword && newPassword) {
@@ -168,18 +209,6 @@ router.get("/getUserData", async (req, res) => {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });
   }
-});
-
-router.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ error: "Failed to destroy session" });
-    }
-
-    res.clearCookie("connect.sid"); // Clear the session cookie
-    res.clearCookie("sessionId"); // Clear any other cookies
-    res.status(200).json({ message: "Logged out successfully" });
-  });
 });
 
 export default router;
