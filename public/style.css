@@ -1,8 +1,9 @@
 body {
-  font-family: Arial, sans-serif;
+  background-color: rgb(141, 141, 141);
+  color: rgb(0, 177, 201);
   margin: 0;
-  padding: 0;
-  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 header {
@@ -47,11 +48,12 @@ nav ul li a:hover {
 .intro h1 {
   font-size: 3em;
   margin-bottom: 20px;
+  color: #fff;
 }
 
 .intro p {
   font-size: 1.2em;
-  color: #333;
+  color: #ccc;
 }
 
 .get-started-button {
@@ -63,6 +65,7 @@ nav ul li a:hover {
   border-radius: 5px;
   font-size: 1.2em;
   transition: background-color 0.3s ease;
+  margin-top: 20px;
 }
 
 .get-started-button:hover {

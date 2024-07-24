@@ -28,13 +28,11 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ username });
     if (!user) {
-      console.log("User not found");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      console.log("Password does not match");
       return res.status(401).json({ message: "Invalid credentials" });
     }
 

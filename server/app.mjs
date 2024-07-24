@@ -50,18 +50,14 @@ app.use(
 
 app.use(cookieParser());
 
-// Serve static files
 app.use(express.static(path.join(__dirname, "../public")));
 app.use("/src", express.static(path.join(__dirname, "../src")));
+app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
-// Parse request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Use routes
 app.use("/", routes);
 
-// Serve the main index.html for the root URL
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });

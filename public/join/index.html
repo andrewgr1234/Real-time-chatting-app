@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="../../assets/Logo-circle.png" />
     <link
-      rel="icon"
-      href="https://images.seattletimes.com/wp-content/uploads/2024/04/04082024_OpEd-Potatoes_124536.jpg?d=2040x1488"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap"
+      rel="stylesheet"
     />
     <title>Chataway | Login/Signup</title>
   </head>
@@ -14,52 +15,54 @@
     <header>
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Main</a></li>
           <li><a href="#">About</a></li>
           <li><a href="#">Help</a></li>
         </ul>
       </nav>
     </header>
 
-    <div class="split left">
-      <form id="loginForm" action="/home">
-        <h2>Login</h2>
-        <input type="text" placeholder="Username" id="loginUsername" />
-        <br />
-        <input type="password" placeholder="Password" id="loginPassword" />
-        <br />
-        <button type="submit" id="loginButton">Login</button>
-      </form>
-    </div>
+    <div class="container">
+      <div class="split left">
+        <form id="loginForm" action="/home">
+          <h2>Login</h2>
+          <input type="text" placeholder="Username" id="loginUsername" />
+          <br />
+          <input type="password" placeholder="Password" id="loginPassword" />
+          <br />
+          <button type="submit" id="loginButton">Login</button>
+        </form>
+      </div>
 
-    <div class="split right">
-      <form id="signupForm" method="post" action="">
-        <h2>Signup</h2>
-        <input type="text" placeholder="Email" id="email" name="email" />
-        <br />
-        <input
-          type="text"
-          placeholder="Username"
-          id="username"
-          name="username"
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="Password"
-          id="password"
-          name="password"
-        />
-        <br />
-        <input
-          type="text"
-          placeholder="Profile Picture URL"
-          id="pfp"
-          name="profilePic"
-        />
-        <br />
-        <button type="submit" id="signupButton">Sign up</button>
-      </form>
+      <div class="split right">
+        <form id="signupForm" method="post" action="">
+          <h2>Signup</h2>
+          <input type="text" placeholder="Email" id="email" name="email" />
+          <br />
+          <input
+            type="text"
+            placeholder="Username"
+            id="username"
+            name="username"
+          />
+          <br />
+          <input
+            type="password"
+            placeholder="Password"
+            id="password"
+            name="password"
+          />
+          <br />
+          <input
+            type="text"
+            placeholder="Profile Picture URL"
+            id="pfp"
+            name="profilePic"
+          />
+          <br />
+          <button type="submit" id="signupButton">Sign up</button>
+        </form>
+      </div>
     </div>
 
     <script type="module" src="../join/script.js"></script>

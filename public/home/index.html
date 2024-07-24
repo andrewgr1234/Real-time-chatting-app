@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../home/style.css" />
-    <link
-      rel="icon"
-      href="https://images.seattletimes.com/wp-content/uploads/2024/04/04082024_OpEd-Potatoes_124536.jpg?d=2040x1488"
-    />
+    <link rel="icon" href="../../assets/Logo-circle.png" />
     <title>Chataway | Home</title>
   </head>
   <body>
@@ -17,11 +14,13 @@
       <button id="logoutButton">Logout</button>
     </header>
 
-    <div id="profile">
+    <div id="profile" class="profile-container">
       <div id="userInfo">
         <h1><u>Your Profile</u></h1>
         <h3>Profile Picture:</h3>
-        <button id="pfp"><img id="img" /></button>
+        <button id="pfp">
+          <img id="img" />
+        </button>
         <br />
         <br />
         <input
@@ -77,10 +76,7 @@
     </div>
 
     <div id="chats">
-      <br /><button id="searchButton" class="search-button">+</button>
-      <br />
-      <br />
-
+      <button id="searchButton" class="search-button">+</button>
       <div id="friends">
         <input type="text" placeholder="Search up friends" name="search" />
         <button>Search</button>

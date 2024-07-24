@@ -1,11 +1,11 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Arial", sans-serif;
   background-color: #f0f0f0;
   margin: 0;
   padding: 0;
 }
 
-::placeholder {
+::placeholder{
   text-align: center;
 }
 
@@ -16,179 +16,156 @@ body {
   background-color: #333;
   color: #fff;
   padding: 10px 20px;
-  position: relative;
 }
 
-.container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  font-size: 2em;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-p {
-  font-size: 1.2em;
-  line-height: 1.6;
-}
-
-#profileBtn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
-}
-
-#img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-}
-
-#pfp {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: transparent;
-  cursor: pointer;
-  border: none;
-  background-position: center;
-}
-
-.profile-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
-#profile {
-  position: absolute;
-  top: 70px;
-  left: 20px;
-  background-color: gray;
-  width: 700px;
-  height: 650px;
-  display: none;
-  justify-content: center;
-  text-align: center;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-}
-
-#profile h1 {
-  padding-top: 15px;
-}
-
-#userInfo {
-  position: absolute;
-  left: 50px;
-  align-items: center;
-  text-align: center;
-  align-content: center;
-}
-
-#changeInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  position: absolute;
-  right: 40px;
-}
-
-.change-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
-}
-
-.change-section button {
-  width: 130px;
-}
-
-#newPfp,
-#pfpChangeButton {
-  display: none;
-}
-
-#separator {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  border-left: 1px solid #ccc;
-  margin-left: -1px;
-}
-
-#logoutButton {
-  cursor: pointer;
-  padding: 10px 20px;
-  font-size: 1.2em;
-  background-color: #dc3545;
+.header-container button {
+  background-color: #444;
   color: #fff;
   border: none;
+  padding: 10px 15px;
   border-radius: 5px;
+  cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-#logoutButton:hover {
-  background-color: #c82333;
+.header-container button:hover {
+  background-color: #555;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+}
+
+.profile-container div {
+  flex: 1;
+  padding: 20px;
+}
+
+.profile-container h1,
+.profile-container h3 {
+  color: #333;
+}
+
+.profile-container button,
+.profile-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.profile-container button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.profile-container button:hover {
+  background-color: #0056b3;
 }
 
 #chats {
-  width: 130px;
-  background-color: rgb(163, 163, 163);
-  height: 500px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  text-align: center;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px;
 }
 
-#chats ul {
-  list-style-type: none;
-}
-
-#friendsList li {
-  margin-bottom: 15px;
-  background-color: rgb(32, 144, 255);
-  padding: 5px;
-  padding-left: 10px;
-  width: 100px;
-  margin-left: -30px;
-  border-radius: 10px;
-}
-
-#friendsList li:hover {
-  background-color: rgba(32, 144, 255, 0.5);
-  cursor: pointer;
-}
-#friends input {
-  width: 120px;
+#chats input,
+#chats button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 .search-button {
-  display: inline-block;
-  font-size: 1.2em;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
   background-color: #28a745;
   color: #fff;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
 }
 
 .search-button:hover {
   background-color: #218838;
+}
+
+#friendsList {
+  list-style-type: none;
+  padding: 0;
+}
+
+#friendsList li {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#friendsList li:hover {
+  background-color: #0056b3;
+}
+
+#separator {
+  width: 1px;
+  background-color: transparent;
+  margin: 0 15px;
+}
+
+#profileBtn {
+  border-radius: 50%;
+  border: none;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  width: 50px; 
+  height: 50px; 
+}
+
+#profile {
+  display: none;
+}
+
+#profile img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+#profile h3 {
+  margin: 0;
+}
+
+#profile button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+}
+
+#pfp{
+  background-color: transparent;
+  cursor: default;
 }

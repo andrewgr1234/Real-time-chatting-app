@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const profile = document.getElementById("profile");
   const deleteButton = document.getElementById("deleteUser");
 
+  const pfpChangeButton = document.getElementById("pfpChangeButton");
+  const emailChangeButton = document.getElementById("emailChangeButton");
+  const usernameChangeButton = document.getElementById("usernameChangeButton");
+  const passwordChangeButton = document.getElementById("passwordChangeButton");
+
   const sessionCookie = getCookies("sessionId");
   if (!sessionCookie) {
     window.location.href = "/join";
@@ -69,151 +74,140 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function toggleProfile() {
-    profile.style.display = profile.style.display === "none" ? "block" : "none";
-  }
-
-  document.getElementById("pfp").addEventListener("click", () => {
-    const pfpChangeButton = document.getElementById("pfpChangeButton");
-    const newPfp = document.getElementById("newPfp");
-    const isVisible = newPfp.style.display === "block";
-    newPfp.style.display = isVisible ? "none" : "block";
-    pfpChangeButton.style.display = isVisible ? "none" : "block";
+  searchButton.addEventListener("click", () => {
+    alert("Search functionality not implemented yet.");
   });
 
-  document.getElementById("pfpChangeButton").addEventListener("click", () => {
-    const newPfp = document.getElementById("newPfp").value;
+  pfpChangeButton.addEventListener("click", async () => {
+    const newPfp = document.getElementById("newPfp").value.trim();
     if (!newPfp) {
-      alert("Please enter a URL");
+      alert("Please enter a new profile picture URL.");
       return;
     }
+    try {
+      const response = await fetch("/update-profile-pic", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ profilePic: newPfp }),
+      });
 
-    fetch("/updateUserData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ profilePic: newPfp }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || "Failed to update profile picture");
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!data.error) {
-          location.reload();
-        }
-      })
-      .catch((error) => alert(error));
-  });
-
-  document.getElementById("emailChangeButton").addEventListener("click", () => {
-    const newEmail = document.getElementById("newEmail").value;
-    if (!newEmail) {
-      alert("Please enter a new email address");
-      return;
-    }
-
-    fetch("/updateUserData", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: newEmail }),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((data) => {
-            throw new Error(data.error || "Failed to update email");
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!data.error) {
-          location.reload();
-        }
-      })
-      .catch((error) => alert(error));
-  });
-
-  document
-    .getElementById("usernameChangeButton")
-    .addEventListener("click", () => {
-      const newUsername = document.getElementById("newUsername").value;
-      if (!newUsername) {
-        alert("Please enter a new username");
-        return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
       }
+      alert("Profile picture updated successfully.");
+      fetchUserData().then(updateProfileInfo);
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      alert("Failed to update profile picture: " + error.message);
+    }
+  });
 
-      fetch("/updateUserData", {
+  emailChangeButton.addEventListener("click", async () => {
+    const newEmail = document.getElementById("newEmail").value.trim();
+    if (!newEmail) {
+      alert("Please enter a new email address.");
+      return;
+    }
+    try {
+      const response = await fetch("/update-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: newEmail }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
+      }
+      alert("Email address updated successfully.");
+      fetchUserData().then(updateProfileInfo);
+    } catch (error) {
+      console.error("Error updating email address:", error);
+      alert("Failed to update email address: " + error.message);
+    }
+  });
+
+  usernameChangeButton.addEventListener("click", async () => {
+    const newUsername = document.getElementById("newUsername").value.trim();
+    if (!newUsername) {
+      alert("Please enter a new username.");
+      return;
+    }
+    try {
+      const response = await fetch("/update-username", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username: newUsername }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data) => {
-              throw new Error(data.error || "Failed to update username");
-            });
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (!data.error) {
-            location.reload();
-          }
-        })
-        .catch((error) => alert(error));
-    });
+      });
 
-  document
-    .getElementById("passwordChangeButton")
-    .addEventListener("click", () => {
-      const currentPassword = document.getElementById("currentPassword").value;
-      const newPassword = document.getElementById("newPassword").value;
-      const confirmPassword = document.getElementById("confirmPassword").value;
-
-      if (!currentPassword || !newPassword || !confirmPassword) {
-        alert("Please fill in all fields to change your password.");
-        return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
       }
+      alert("Username updated successfully.");
+      fetchUserData().then(updateProfileInfo);
+    } catch (error) {
+      console.error("Error updating username:", error);
+      alert("Failed to update username: " + error.message);
+    }
+  });
 
-      if (newPassword !== confirmPassword) {
-        alert("Passwords do not match. Please try again.");
-        return;
-      }
+  passwordChangeButton.addEventListener("click", async () => {
+    const currentPassword = document
+      .getElementById("currentPassword")
+      .value.trim();
+    const newPassword = document.getElementById("newPassword").value.trim();
+    const confirmPassword = document
+      .getElementById("confirmPassword")
+      .value.trim();
 
-      fetch("/updateUserData", {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      alert("Please fill out all password fields.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      alert("New password and confirm password do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/update-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data) => {
-              throw new Error(data.error || "Failed to update password");
-            });
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (!data.error) {
-            alert("Password changed! Please log back in to apply changes.");
-            deleteCookies();
-            window.location.href = "/join";
-          }
-        })
-        .catch((error) => alert(error));
-    });
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `HTTP error! Status: ${response.status}`
+        );
+      }
+      alert("Password updated successfully.");
+    } catch (error) {
+      console.error("Error updating password:", error);
+      alert("Failed to update password: " + error.message);
+    }
+  });
 
   deleteButton.addEventListener("click", function handleClick() {
     deleteButton.textContent = "Are you sure? (Click again for yes)";
@@ -237,10 +231,15 @@ document.addEventListener("DOMContentLoaded", () => {
           if (!data.error) {
             alert("User deleted, goodbye forever...");
             deleteCookies();
-            window.location.href = "/join";
+            window.location.href = "/";
           }
         })
         .catch((error) => alert(error));
     });
   });
 });
+
+function toggleProfile() {
+  const profile = document.getElementById("profile");
+  profile.style.display = profile.style.display === "none" ? "flex" : "none";
+}
