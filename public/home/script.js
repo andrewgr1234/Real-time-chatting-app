@@ -1,8 +1,11 @@
+import { getCookies, fetchUserData } from "../../src/public-functions.js";
 import {
-  getCookies,
-  fetchUserData,
-  deleteCookies,
-} from "../../src/public-functions.js";
+  pfpChange,
+  emailChange,
+  usernameChange,
+  passwordChange,
+  deleteUser,
+} from "../../src/updateUserData.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const logoutButton = document.getElementById("logoutButton");
@@ -30,6 +33,29 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error fetching user data:", error);
     });
 
+  profileButton.addEventListener("click", () => {
+    if (profile.style.display === "block") {
+      profile.style.display = "none";
+    } else {
+      profile.style.display = "block";
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!profile.contains(event.target) && event.target !== profileButton) {
+      profile.style.display = "none";
+    }
+  });
+
+  searchButton.addEventListener("click", () => {
+    const friends = document.getElementById("friends");
+    if (friends.style.display == "none") {
+      friends.style.display = "block";
+    } else {
+      friends.style.display = "none";
+    }
+  });
+
   function updateProfileInfo(userData) {
     const welcomeMessage = document.getElementById("welcomeMessage");
     welcomeMessage.textContent = `Welcome back ${userData.username}`;
@@ -42,6 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
     username.textContent = userData.username;
     profileImg.src = userData.profilePic;
   }
+
+  pfpChangeButton.addEventListener("click", pfpChange);
+  emailChangeButton.addEventListener("click", emailChange);
+  usernameChangeButton.addEventListener("click", usernameChange);
+  passwordChangeButton.addEventListener("click", passwordChange);
+  deleteButton.addEventListener("click", deleteUser);
 
   logoutButton.addEventListener("click", async () => {
     try {
@@ -66,180 +98,88 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  profileButton.addEventListener("click", toggleProfile);
+  const friendsList = document.getElementById("friendsList");
+  const tabList = document.getElementById("tabList");
+  const chatboxContent = document.getElementById("chatboxContent");
 
-  document.addEventListener("click", (event) => {
-    if (!profile.contains(event.target) && event.target !== profileButton) {
-      profile.style.display = "none";
+  friendsList.addEventListener("click", (e) => {
+    if (e.target.tagName === "LI") {
+      const friendName = e.target.textContent;
+      openChatTab(friendName);
     }
   });
 
-  searchButton.addEventListener("click", () => {
-    alert("Search functionality not implemented yet.");
-  });
+  function openChatTab(friendName) {
+    const existingTab = [...tabList.children].find(
+      (tab) => tab.textContent.trim() === friendName
+    );
 
-  pfpChangeButton.addEventListener("click", async () => {
-    const newPfp = document.getElementById("newPfp").value.trim();
-    if (!newPfp) {
-      alert("Please enter a new profile picture URL.");
-      return;
-    }
-    try {
-      const response = await fetch("/update-profile-pic", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ profilePic: newPfp }),
+    if (!existingTab) {
+      const tab = document.createElement("li");
+      tab.textContent = friendName;
+
+      const closeButton = document.createElement("span");
+      closeButton.textContent = " x";
+      closeButton.classList.add("close-tab");
+      tab.appendChild(closeButton);
+
+      tabList.appendChild(tab);
+      displayChatBox(friendName);
+
+      tab.addEventListener("click", () => displayChatBox(friendName));
+
+      closeButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        tab.remove();
+        if (tab.classList.contains("active")) {
+          chatboxContent.innerHTML = "";
+        }
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
-      }
-      alert("Profile picture updated successfully.");
-      fetchUserData().then(updateProfileInfo);
-    } catch (error) {
-      console.error("Error updating profile picture:", error);
-      alert("Failed to update profile picture: " + error.message);
-    }
-  });
-
-  emailChangeButton.addEventListener("click", async () => {
-    const newEmail = document.getElementById("newEmail").value.trim();
-    if (!newEmail) {
-      alert("Please enter a new email address.");
-      return;
-    }
-    try {
-      const response = await fetch("/update-email", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: newEmail }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
-      }
-      alert("Email address updated successfully.");
-      fetchUserData().then(updateProfileInfo);
-    } catch (error) {
-      console.error("Error updating email address:", error);
-      alert("Failed to update email address: " + error.message);
-    }
-  });
-
-  usernameChangeButton.addEventListener("click", async () => {
-    const newUsername = document.getElementById("newUsername").value.trim();
-    if (!newUsername) {
-      alert("Please enter a new username.");
-      return;
-    }
-    try {
-      const response = await fetch("/update-username", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username: newUsername }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
-      }
-      alert("Username updated successfully.");
-      fetchUserData().then(updateProfileInfo);
-    } catch (error) {
-      console.error("Error updating username:", error);
-      alert("Failed to update username: " + error.message);
-    }
-  });
-
-  passwordChangeButton.addEventListener("click", async () => {
-    const currentPassword = document
-      .getElementById("currentPassword")
-      .value.trim();
-    const newPassword = document.getElementById("newPassword").value.trim();
-    const confirmPassword = document
-      .getElementById("confirmPassword")
-      .value.trim();
-
-    if (!currentPassword || !newPassword || !confirmPassword) {
-      alert("Please fill out all password fields.");
-      return;
     }
 
-    if (newPassword !== confirmPassword) {
-      alert("New password and confirm password do not match.");
-      return;
+    displayChatBox(friendName);
+  }
+
+  function displayChatBox(friendName) {
+    chatboxContent.innerHTML = `
+      <div id="chatbox-${friendName}" class="chatbox">
+        <div class="messages" id="messages-${friendName}"></div>
+        <div class="chat-input-container">
+          <input type="text" id="input-${friendName}" placeholder="Type a message..." />
+          <button onclick="sendMessage('${friendName}')">Send</button>
+        </div>
+      </div>
+    `;
+
+    const activeTab = [...tabList.children].find((tab) =>
+      tab.classList.contains("active")
+    );
+    if (activeTab) activeTab.classList.remove("active");
+
+    const currentTab = [...tabList.children].find(
+      (tab) => tab.textContent.trim() === friendName
+    );
+    if (currentTab) currentTab.classList.add("active");
+  }
+
+  window.sendMessage = function (friendName) {
+    const input = document.getElementById(`input-${friendName}`);
+    const message = input.value.trim();
+    if (message) {
+      const messagesDiv = document.getElementById(`messages-${friendName}`);
+      const userMessage = document.createElement("div");
+      userMessage.classList.add("message", "you");
+      userMessage.textContent = `You: ${message}`;
+      messagesDiv.appendChild(userMessage);
+
+      setTimeout(() => {
+        const friendMessage = document.createElement("div");
+        friendMessage.classList.add("message", "friend");
+        friendMessage.textContent = `${friendName}: nuh uh`;
+        messagesDiv.appendChild(friendMessage);
+      }, 1000);
+
+      input.value = "";
     }
-
-    try {
-      const response = await fetch("/update-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! Status: ${response.status}`
-        );
-      }
-      alert("Password updated successfully.");
-    } catch (error) {
-      console.error("Error updating password:", error);
-      alert("Failed to update password: " + error.message);
-    }
-  });
-
-  deleteButton.addEventListener("click", function handleClick() {
-    deleteButton.textContent = "Are you sure? (Click again for yes)";
-    deleteButton.removeEventListener("click", handleClick);
-    deleteButton.addEventListener("click", () => {
-      fetch("/deleteUser", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            return response.json().then((data) => {
-              throw new Error(data.error || "Failed to delete user");
-            });
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (!data.error) {
-            alert("User deleted, goodbye forever...");
-            deleteCookies();
-            window.location.href = "/";
-          }
-        })
-        .catch((error) => alert(error));
-    });
-  });
+  };
 });
-
-function toggleProfile() {
-  const profile = document.getElementById("profile");
-  profile.style.display = profile.style.display === "none" ? "flex" : "none";
-}

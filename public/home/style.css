@@ -5,7 +5,7 @@ body {
   padding: 0;
 }
 
-::placeholder{
+::placeholder {
   text-align: center;
 }
 
@@ -32,18 +32,53 @@ body {
   background-color: #555;
 }
 
+.main-container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+#profile {
+  width: 60%;
+  height: 600px;
+  z-index: 10;
+}
+
+
+#userInfo {
+  position: absolute;
+  left: 50px;
+  align-items: center;
+  text-align: center;
+  align-content: center;
+}
+
+#changeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: absolute;
+  right: 40px;
+}
+
 .profile-container {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin: 20px;
+  width: 70%;
+  z-index: 9;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 700px;
 }
 
-.profile-container div {
+.profile-section {
   flex: 1;
   padding: 20px;
 }
@@ -55,7 +90,7 @@ body {
 
 .profile-container button,
 .profile-container input {
-  width: 100%;
+  width: 50%;
   padding: 10px;
   margin: 10px 0;
   border-radius: 5px;
@@ -83,6 +118,7 @@ body {
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin: 20px;
+  width: 15%;
 }
 
 #chats input,
@@ -94,10 +130,18 @@ body {
   border: 1px solid #ccc;
 }
 
-.search-button {
+#friends {
+  display: none;
+}
+
+#friends input {
+  width: 130px;
+}
+
+#searchButton {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 20%;
   background-color: #28a745;
   color: #fff;
   border: none;
@@ -128,20 +172,14 @@ body {
   background-color: #0056b3;
 }
 
-#separator {
-  width: 1px;
-  background-color: transparent;
-  margin: 0 15px;
-}
-
 #profileBtn {
   border-radius: 50%;
   border: none;
   background-size: cover;
   background-position: center;
   cursor: pointer;
-  width: 50px; 
-  height: 50px; 
+  width: 50px;
+  height: 50px;
 }
 
 #profile {
@@ -161,11 +199,92 @@ body {
 
 #profile button {
   display: block;
-  width: 100%;
+  width: 50%;
   margin-top: 10px;
 }
 
-#pfp{
+#pfp {
   background-color: transparent;
   cursor: default;
+}
+
+.tab-list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  margin: 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.tab-list li {
+  padding: 10px 15px;
+  margin-right: 5px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px 5px 0 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab-list li:hover {
+  background-color: #0056b3;
+}
+
+.tab-list .close-tab {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.tab-list .close-tab:hover {
+  color: #ff0000;
+}
+
+.chatbox-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.chat-title {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 0 0 5px 5px;
+  text-align: center;
+}
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #ccc;
+}
+
+.chat-input-container input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.chat-input-container button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input-container button:disabled {
+  background-color: #ccc;
+}
+
+.chat-input-container button:hover:not(:disabled) {
+  background-color: #0056b3;
 }

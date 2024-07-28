@@ -14,77 +14,91 @@
       <button id="logoutButton">Logout</button>
     </header>
 
-    <div id="profile" class="profile-container">
-      <div id="userInfo">
-        <h1><u>Your Profile</u></h1>
-        <h3>Profile Picture:</h3>
-        <button id="pfp">
-          <img id="img" />
-        </button>
-        <br />
-        <br />
-        <input
-          width="150px"
-          id="newPfp"
-          placeholder="New image URL"
-          type="text"
-        />
-        <br />
-        <button id="pfpChangeButton" type="submit">Confirm change</button>
-        <h3>Email Address:</h3>
-        <u><h4 id="email"></h4></u>
-        <h3>Username:</h3>
-        <u><h4 id="username"></h4></u>
+    <div class="main-container">
+      <div id="profile" class="profile-container">
+        <div id="userInfo" class="profile-section">
+          <h1><u>Your Profile</u></h1>
+          <h3>Profile Picture:</h3>
+          <button id="pfp">
+            <img id="img" />
+          </button>
+          <br /><br />
+          <input
+            width="150px"
+            id="newPfp"
+            placeholder="New image URL"
+            type="text"
+          />
+          <br />
+          <button id="pfpChangeButton" type="submit">Confirm change</button>
+          <h3>Email Address:</h3>
+          <u><h4 id="email"></h4></u>
+          <h3>Username:</h3>
+          <u><h4 id="username"></h4></u>
+        </div>
+        <div id="changeInfo" class="profile-section">
+          <h1><u>Change Your Info</u></h1>
+          <div id="emailChange" class="change-section">
+            <h3><u>Change Your Email Address:</u></h3>
+            <input id="newEmail" placeholder="New Email Address" type="text" />
+            <button id="emailChangeButton" type="submit">Confirm change</button>
+          </div>
+          <div id="usernameChange" class="change-section">
+            <h3><u>Change Your Username:</u></h3>
+            <input id="newUsername" placeholder="New Username" type="text" />
+            <button id="usernameChangeButton" type="submit">
+              Confirm change
+            </button>
+          </div>
+          <div id="passwordChange" class="change-section">
+            <h3><u>Change Your Password:</u></h3>
+            <input
+              id="currentPassword"
+              placeholder="Current Password"
+              type="password"
+            />
+            <input
+              id="newPassword"
+              placeholder="New Password"
+              type="password"
+            />
+            <input
+              id="confirmPassword"
+              placeholder="Confirm Password"
+              type="password"
+            />
+            <button id="passwordChangeButton" type="submit">
+              Confirm change
+            </button>
+          </div>
+          <button id="deleteUser" type="submit">Delete account</button>
+        </div>
       </div>
 
-      <div id="separator"></div>
-
-      <div id="changeInfo">
-        <h1><u>Change Your Info</u></h1>
-        <div id="emailChange" class="change-section">
-          <h3><u>Change Your Email Address:</u></h3>
-          <input id="newEmail" placeholder="New Email Address" type="text" />
-          <button id="emailChangeButton" type="submit">Confirm change</button>
+      <div id="chats">
+        <button id="searchButton" class="search-button">+</button>
+        <div id="friends">
+          <input type="text" placeholder="Search up friends" name="search" />
+          <button>Search</button>
+          <ul id="friendsList">
+            <li class="friend">John Doe 1</li>
+            <li class="friend">John Doe 2</li>
+            <li class="friend">John Doe 3</li>
+          </ul>
         </div>
-        <div id="usernameChange" class="change-section">
-          <h3><u>Change Your Username:</u></h3>
-          <input id="newUsername" placeholder="New Username" type="text" />
-          <button id="usernameChangeButton" type="submit">
-            Confirm change
-          </button>
-        </div>
-        <div id="passwordChange" class="change-section">
-          <h3><u>Change Your Password:</u></h3>
-          <input
-            id="currentPassword"
-            placeholder="Current Password"
-            type="password"
-          />
-          <input id="newPassword" placeholder="New Password" type="password" />
-          <input
-            id="confirmPassword"
-            placeholder="Confirm Password"
-            type="password"
-          />
-          <button id="passwordChangeButton" type="submit">
-            Confirm change
-          </button>
-        </div>
-
-        <button id="deleteUser" type="submit">Delete account</button>
       </div>
-    </div>
 
-    <div id="chats">
-      <button id="searchButton" class="search-button">+</button>
-      <div id="friends">
-        <input type="text" placeholder="Search up friends" name="search" />
-        <button>Search</button>
-        <ul id="friendsList">
-          <li>John Doe 1</li>
-          <li>John Doe 2</li>
-          <li>John Doe 3</li>
-        </ul>
+      <div id="chatboxContainer">
+        <div id="tabContainer" class="tab-container">
+          <ul id="tabList" class="tab-list"></ul>
+        </div>
+        <div id="chatTitle" class="chat-title"></div>
+        <div id="chatboxContent" class="chatbox-content">
+          <div class="chat-input-container">
+            <input type="text" id="input" placeholder="Type a message..." />
+            <button id="sendButton" disabled>Send</button>
+          </div>
+        </div>
       </div>
     </div>
 
