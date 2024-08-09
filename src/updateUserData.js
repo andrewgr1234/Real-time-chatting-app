@@ -8,7 +8,7 @@ export async function pfpChange() {
   }
   try {
     const response = await fetch("/updateUserData", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -23,6 +23,7 @@ export async function pfpChange() {
     }
     alert("Profile picture updated successfully.");
     fetchUserData().then(updateProfileInfo);
+    window.location.reload();
   } catch (error) {
     console.error("Error updating profile picture:", error);
     alert("Failed to update profile picture: " + error.message);
@@ -37,7 +38,7 @@ export async function emailChange() {
   }
   try {
     const response = await fetch("/updateUserData", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -52,6 +53,7 @@ export async function emailChange() {
     }
     alert("Email address updated successfully.");
     fetchUserData().then(updateProfileInfo);
+    window.location.reload();
   } catch (error) {
     console.error("Error updating email address:", error);
     alert("Failed to update email address: " + error.message);
@@ -66,7 +68,7 @@ export async function usernameChange() {
   }
   try {
     const response = await fetch("/updateUserData", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -81,6 +83,7 @@ export async function usernameChange() {
     }
     alert("Username updated successfully.");
     fetchUserData().then(updateProfileInfo);
+    window.location.reload();
   } catch (error) {
     console.error("Error updating username:", error);
     alert("Failed to update username: " + error.message);
@@ -108,7 +111,7 @@ export async function passwordChange() {
 
   try {
     const response = await fetch("/updateUserData", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },

@@ -12,12 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchButton = document.getElementById("searchButton");
   const profileButton = document.getElementById("profileBtn");
   const profile = document.getElementById("profile");
-  const deleteButton = document.getElementById("deleteUser");
-
-  const pfpChangeButton = document.getElementById("pfpChangeButton");
-  const emailChangeButton = document.getElementById("emailChangeButton");
-  const usernameChangeButton = document.getElementById("usernameChangeButton");
-  const passwordChangeButton = document.getElementById("passwordChangeButton");
 
   const sessionCookie = getCookies("sessionId");
   if (!sessionCookie) {
@@ -69,11 +63,19 @@ document.addEventListener("DOMContentLoaded", () => {
     profileImg.src = userData.profilePic;
   }
 
-  pfpChangeButton.addEventListener("click", pfpChange);
-  emailChangeButton.addEventListener("click", emailChange);
-  usernameChangeButton.addEventListener("click", usernameChange);
-  passwordChangeButton.addEventListener("click", passwordChange);
-  deleteButton.addEventListener("click", deleteUser);
+  document
+    .getElementById("pfpChangeButton")
+    .addEventListener("click", pfpChange);
+  document
+    .getElementById("emailChangeButton")
+    .addEventListener("click", emailChange);
+  document
+    .getElementById("usernameChangeButton")
+    .addEventListener("click", usernameChange);
+  document
+    .getElementById("passwordChangeButton")
+    .addEventListener("click", passwordChange);
+  document.getElementById("deleteUser").addEventListener("click", deleteUser);
 
   logoutButton.addEventListener("click", async () => {
     try {
@@ -101,6 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const friendsList = document.getElementById("friendsList");
   const tabList = document.getElementById("tabList");
   const chatboxContent = document.getElementById("chatboxContent");
+
+  const chatHistory = {};
 
   friendsList.addEventListener("click", (e) => {
     if (e.target.tagName === "LI") {
@@ -135,9 +139,9 @@ document.addEventListener("DOMContentLoaded", () => {
           chatboxContent.innerHTML = "";
         }
       });
+    } else {
+      displayChatBox(friendName);
     }
-
-    displayChatBox(friendName);
   }
 
   function displayChatBox(friendName) {
@@ -146,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="messages" id="messages-${friendName}"></div>
         <div class="chat-input-container">
           <input type="text" id="input-${friendName}" placeholder="Type a message..." />
-          <button onclick="sendMessage('${friendName}')">Send</button>
+          <button id="sendButton-${friendName}" onclick="sendMessage('${friendName}')">Send</button>
         </div>
       </div>
     `;
@@ -160,6 +164,18 @@ document.addEventListener("DOMContentLoaded", () => {
       (tab) => tab.textContent.trim() === friendName
     );
     if (currentTab) currentTab.classList.add("active");
+
+    const inputField = document.getElementById(`input-${friendName}`);
+    inputField.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        sendMessage(friendName);
+      }
+    });
+
+    if (chatHistory[friendName]) {
+      const messagesDiv = document.getElementById(`messages-${friendName}`);
+      messagesDiv.innerHTML = chatHistory[friendName];
+    }
   }
 
   window.sendMessage = function (friendName) {
@@ -177,9 +193,12 @@ document.addEventListener("DOMContentLoaded", () => {
         friendMessage.classList.add("message", "friend");
         friendMessage.textContent = `${friendName}: nuh uh`;
         messagesDiv.appendChild(friendMessage);
+
+        chatHistory[friendName] = messagesDiv.innerHTML;
       }, 1000);
 
       input.value = "";
+      chatHistory[friendName] = messagesDiv.innerHTML;
     }
   };
 });

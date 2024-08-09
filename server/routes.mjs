@@ -52,6 +52,7 @@ router.post("/login", async (req, res) => {
     }
   }
 });
+
 router.post("/signup", async (req, res) => {
   const { username, password, email } = req.body;
   let { profilePic } = req.body;
@@ -105,7 +106,7 @@ router.post("/logout", (req, res) => {
   });
 });
 
-router.post("/deleteUser", async (req, res) => {
+router.delete("/deleteUser", async (req, res) => {
   try {
     const userId = req.cookies.sessionId;
     if (!userId) {
@@ -137,7 +138,7 @@ router.post("/deleteUser", async (req, res) => {
   }
 });
 
-router.post("/updateUserData", async (req, res) => {
+router.put("/updateUserData", async (req, res) => {
   try {
     const { email, username, profilePic, currentPassword, newPassword } =
       req.body;
